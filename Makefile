@@ -8,12 +8,15 @@ CFLAGS += $(shell pkg-config --cflags $(LUA_PCNAME))
 
 LIB_RS := $(filter-out tests.rs,$(wildcard *.rs))
 
+RUSTCFLAGS = $(if $(CARGO_RUSTFLAGS), $(CARGO_RUSTFLAGS), -O)
+OUT_DIR = $(if $(CARGO_OUT_DIR), $(CARGO_OUT_DIR), ".")
+
 lib: $(LIBNAME)
 
 all: lib examples doc
 
 $(LIBNAME): $(LIB_RS)
-	rustc -O lib.rs
+	rustc lib.rs --out-dir $(OUT_DIR) $(RUSTCFLAGS)
 
 $(LIBNAME): config.rs
 
